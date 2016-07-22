@@ -1,6 +1,7 @@
 #W2D4 weekend hw
 
 import csv
+import Rating
 
 #Find all ratings for a movie by id
     # need to open file for u.data
@@ -23,6 +24,11 @@ def calc_avg_rating(mID):
     average_rating = x/len(all_ratings_for_specific_movie)
     print ("{0:.2f}".format(average_rating,))
     return average_rating
+
+
+def num_of_ratings_per_movie(which_movie):
+    num_ratings = Rating.num_ratings
+    return (num_ratings[which_movie - 1])
 
 
 #Find the name of a movie by id
