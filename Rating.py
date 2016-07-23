@@ -11,13 +11,13 @@ with open('ml-100k/u.data') as f: # automatically closes the file when done
 
 tempList = ratings_list
 
-count = 1           #build blank dicts
+count = 1           #build blank dict
 tempDict = {}
 while count < 1683:
     tempDict[str(count)] = []
     count += 1
 
-for each in tempList:
+for each in tempList:   #why does this kill ratings_list too ??
     each.pop(3)
     each.pop(0)
     r = int(each[1])
