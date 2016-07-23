@@ -2,6 +2,7 @@
 
 import csv
 import Rating
+import Movie
 
 #Find all ratings for a movie by id
     # need to open file for u.data
@@ -36,17 +37,19 @@ def num_of_ratings_per_movie(which_movie):
     return (num_ratings[which_movie - 1])
 
 
-#show me the top x movies with at least y reviews
-def top_ten_movies(top, min_num_reviews):
-
+def movies_to_search_filter(min_num_reviews):
     num_reviews = Rating.tempDict
     count = 1
     movies_to_search = []
-
     while count < 1683:
         if (len(num_reviews[str(count)])) >= min_num_reviews:
             movies_to_search.append(str(count))
         count += 1
+    return movies_to_search
+
+
+#show me the top x movies with at least y reviews
+def top_ten_movies(top, movies_to_search):
 
 # ---- this gets any movies with a 4.0 rating or above ----
     # top_movie = []
@@ -77,31 +80,27 @@ def top_ten_movies(top, min_num_reviews):
 
 #Find the name of a movie by id
 def find_movie_by_ID(mID):
-    with open('ml-100k/u.item', encoding='latin_1') as f: # automatically closes the file when done
-        reader = csv.reader(f, delimiter = '\t')
+    movie_name = ""
+    for row in Movie.movies_list:
+        movie_ID = ""
+        temp_str = str(row)
+        str_list = list(temp_str)
+        idx = str_list.index('|')   #find index of delimiter
+        for i in range(2, idx):
+            movie_ID += str_list[i] #put ID in string
+        if mID == movie_ID:
+            idx += 1
+            for i in range(idx):
+                str_list.pop(0)     #delete the ID
+            idx = str_list.index('|')
+            for i in range(idx):
+                movie_name += str_list[i]   #build name
+            done = True
+        else:
+            continue
 
-        movie_name = ""
-
-        for row in reader:
-            movie_ID = ""
-            temp_str = str(row)
-            str_list = list(temp_str)
-            idx = str_list.index('|')   #find index of delimiter
-            for i in range(2, idx):
-                movie_ID += str_list[i] #put ID in string
-            if mID == movie_ID:
-                idx += 1
-                for i in range(idx):
-                    str_list.pop(0)     #delete the ID
-                idx = str_list.index('|')
-                for i in range(idx):
-                    movie_name += str_list[i]   #build name
-                done = True
-            else:
-                continue
-
-            if done == True:
-                break
+        if done == True:
+            break
 
     return movie_name
 
@@ -141,3 +140,13 @@ def get_unrated_movies_for_user(uID):
             unwatched_movies.pop(int(each))
 
     return unwatched_movies
+
+
+
+# print(get_unrated_movies_for_user('55'),"movies not watched: ",len(get_unrated_movies_for_user('55')))
+# input()
+# print(movies_to_search_filter(25),"movies with 25 ratings",len(movies_to_search_filter(25)))
+# input()
+# print(z,"COMBINED",len(z))
+# input()
+# print(newnewlist,"COMBINED in a list",len(newnewlist))
