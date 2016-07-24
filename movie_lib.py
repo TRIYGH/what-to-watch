@@ -3,6 +3,8 @@
 import csv
 import Rating
 import Movie
+import User
+import math
 
 #Find all ratings for a movie by id
     # need to open file for u.data
@@ -118,35 +120,100 @@ def all_rating_for_a_user(uID):
     return specific_user_total_ratings
 
 
+# Find all ratings AND corresponding movies for a user
+def get_all_users_ratings_and_movies(uID):
+    userX = Rating.ratings_list
+    his_mov_and_ratg = []
+    for each in userX:
+        if each[0] == uID:
+            his_mov_and_ratg.append([each[1],each[2]])
+
+    if len(his_mov_and_ratg) < 10:
+        his_mov_and_ratg = []
+    return his_mov_and_ratg
+
+
 def get_unrated_movies_for_user(uID):
-    with open('ml-100k/u.data') as f: # automatically closes the file when done
-        reader = csv.reader(f, delimiter = '\t')
-        ratings_list = []
-        for row in reader:
-            ratings_list.append(row)
+    ratings_list = Rating.ratings_list
+    pop_list = []
+    for each in ratings_list:
+        if each[0] == uID:
+            pop_list.append(each[1])
 
-        pop_list = []
-        for each in ratings_list:
-            if each[0] == uID:
-                pop_list.append(each[1])
+    unwatched_movies = []
+    x = 1
+    while x < 1683:
+        unwatched_movies.append(str(x))
+        x += 1
 
-        unwatched_movies = []
-        x = 1
-        while x < 1683:
-            unwatched_movies.append(str(x))
-            x += 1
-
-        for each in pop_list:
-            unwatched_movies.pop(int(each))
+    for each in pop_list:
+        unwatched_movies.pop(int(each))
 
     return unwatched_movies
 
 
+def euclidean_distance(v, w):
+    """Given two lists, give the Euclidean distance between them on a scale
+    of 0 to 1. 1 means the two lists are identical.
+    """
 
-# print(get_unrated_movies_for_user('55'),"movies not watched: ",len(get_unrated_movies_for_user('55')))
-# input()
-# print(movies_to_search_filter(25),"movies with 25 ratings",len(movies_to_search_filter(25)))
-# input()
-# print(z,"COMBINED",len(z))
-# input()
-# print(newnewlist,"COMBINED in a list",len(newnewlist))
+    # Guard against empty lists.
+    if len(v) is 0:
+        return 0
+    if len(v) < 10:       # *** min. num. of comparisons required
+        return 0
+    # Note that this is the same as vector subtraction.
+    differences = [v[idx] - w[idx] for idx in range(len(v))]
+    squares = [diff ** 2 for diff in differences]
+    sum_of_squares = sum(squares)
+
+    return 1 / (1 + math.sqrt(sum_of_squares))
+
+
+def make_udict(uXlorm):
+    uX_dict = {}
+    for each in uXlorm:
+        uX_dict[each[0]] = each[1]
+    return uX_dict
+
+
+def match_users_by_movies_rated(u1_dict, u2_dict):
+    v = []
+    w = []
+    if len(u1_dict) < len(u2_dict):
+        same_movies = []
+        for each in u1_dict:
+            if each in u2_dict:
+                v.append(int(u1_dict[each]))
+                w.append(int(u2_dict[each]))
+                print(u1_dict[each], u2_dict[each])
+
+    if len(u1_dict) > len(u2_dict):
+        same_movies = []
+        for each in u2_dict:
+            if each in u1_dict:
+                v.append(int(u1_dict[each]))
+                w.append(int(u2_dict[each]))
+                print(u1_dict[each], u2_dict[each])
+
+    edist = euclidean_distance(v,w)
+    edist *= 100
+    print("\nThese two movie-goers are about {} percent in similarity.\n\n".format(edist))
+
+    return edist
+
+
+
+def get_max_euclidean_scores(eucl_scores_dict):
+    best_fit = []
+    i = 0
+    while i < 10:
+        v=list(eucl_scores_dict.values())
+        k=list(eucl_scores_dict.keys())
+        key = k[v.index(max(v))]
+        print(k[v.index(max(v))])
+        best_fit.append(str(k[v.index(max(v))]))    #should use a list instead
+        del eucl_scores_dict[key]
+        i += 1
+
+    return best_fit
