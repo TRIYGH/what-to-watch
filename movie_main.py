@@ -5,8 +5,10 @@ from movie_lib import *
 ######  get user a good suggestion  ######
 
 all_suggestions = []
-umu = get_unrated_movies_for_user('55')
-mwr = movies_to_search_filter(25)
+entry = input("\n\nWhich user do you want to see their unwatched movies? ")
+umu = get_unrated_movies_for_user(entry)
+entry = input("How many minimum reviews? ( to be included in search)  ")
+mwr = movies_to_search_filter(int(entry))
 combined = set(umu) & set(mwr)
 for each in combined:
     all_suggestions.append(each)
@@ -17,10 +19,11 @@ x = 0
 while x < len(top_suggestions):
     print(find_movie_by_ID(top_suggestions[x])," has an average rating of:\t{:0.2f}".format(top_suggestions[x+1]))
     x += 2
-print(all_rating_for_a_user('111'))
-print(all_rating_for_a_user('32'))
-input()
+#print(all_rating_for_a_user('111'))
+#print(all_rating_for_a_user('32'))
+input("\n PRESS ENTER TO CONTINUE\n\n")
 #========================   STEP 5   ============================
+print("-- COMPARE USERS FOR SIMILARITY --")
 u1 = input("user 1 :")
 u1lorm = get_all_users_ratings_and_movies(u1)
 
@@ -32,15 +35,15 @@ u2_dict = make_udict(u2lorm)
 
 edist = match_users_by_movies_rated(u1_dict, u2_dict)
 
-input()
+input("\n PRESS ENTER TO CONTINUE\n\n")
 print(u1_dict)
 
-input()
+input("\n PRESS ENTER TO CONTINUE\n\n")
 print(u2_dict)
 
 # ===============================================================
 #       Compare all users to this one:
-u1 = input("give me a user to find their best matches: ")
+u1 = input("Give me a user to find their best matches: ")
 u1lorm = get_all_users_ratings_and_movies(u1)
 u1_dict = make_udict(u1lorm)
 
@@ -56,7 +59,7 @@ for i in range(x):
         eucl_score = match_users_by_movies_rated(u1_dict, u2_dict)
         eucl_scores_dict[(i+1)] = eucl_score
 
-print(eucl_scores_dict,"^^^^^^^^^^^^^^^^^")
+print(eucl_scores_dict,"\neuclidean scores\n")
 
 #============ DEEP SHALLOW COPY PROBLEM ===============
 for i in range(x):
@@ -80,7 +83,7 @@ best_fit = get_max_euclidean_scores(eucl_scores_dict)
 #     del eucl_scores_dict[key]
 #     i += 1
 #
-print(best_fit,"\n")
+print(best_fit,"\nBEST FITS\n\n")
 
 def loop_thru(uX, uU_list, uM_list, uR_list, each, umu1):
     z = 0
@@ -111,7 +114,7 @@ for each in best_fit:
     uU_list, uM_list, uR_list = (loop_thru(uX, uU_list, uM_list, uR_list, each, umu1))
 
 print(uU_list, uM_list, uR_list)
-input()
+input("\n PRESS ENTER TO CONTINUE\n\n")
 
 print(uX_list)
 print(extra_copy_eucl_scores_dict)
