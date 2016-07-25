@@ -8,3 +8,4 @@ with open('ml-100k/u.item', encoding='latin_1') as f: # automatically closes the
     movies_list = []
     for row in reader:
         movies_list.append(row)
+ 

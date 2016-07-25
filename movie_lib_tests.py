@@ -31,4 +31,6 @@ def test_topX_movies():
 
 def test_unwatched_movies_user():
     uwm = len(get_unrated_movies_for_user('55'))
-    assert uwm == 1533
+    assert uwm == 1661
+
+    

@@ -7,3 +7,4 @@ with open('ml-100k/u.user') as f: # automatically closes the file when done
     users_list = []
     for row in reader:
         users_list.append(row)
+ 

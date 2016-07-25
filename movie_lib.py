@@ -16,11 +16,12 @@ def ratings_by_ID(mID):
     # print(Rating.tempList)
     # input()
     all_ratings_for_specific_movie = []
-    for row in Rating.ratings_list:
-        if row[0] == mID:
-            all_ratings_for_specific_movie.append(row[1])    #get rating
-    return all_ratings_for_specific_movie
 
+    for row in Rating.ratings_list:
+        if row[1] == mID:
+            all_ratings_for_specific_movie.append(row[2])    #get rating
+    return all_ratings_for_specific_movie
+print(ratings_by_ID('172'))
 
 #Find the average rating for a movie by id
     #use lists above
@@ -29,9 +30,10 @@ def calc_avg_rating(mID):
     x = 0
     for each in all_ratings_for_specific_movie:
         x += int(each)
-    average_rating = x/len(all_ratings_for_specific_movie)
+    if len(all_ratings_for_specific_movie) != 0:
+        average_rating = x/len(all_ratings_for_specific_movie)
     #print ("{0:.2f}".format(average_rating,))
-    return average_rating
+        return average_rating
 
 
 def num_of_ratings_per_movie(which_movie):
@@ -150,7 +152,7 @@ def get_unrated_movies_for_user(uID):
         unwatched_movies.pop(int(each))
 
     return unwatched_movies
-
+print(len(get_unrated_movies_for_user('55')))
 
 def euclidean_distance(v, w):
     """Given two lists, give the Euclidean distance between them on a scale

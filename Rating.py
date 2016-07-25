@@ -31,3 +31,4 @@ with open('ml-100k/u.data') as f: # automatically closes the file when done
     ratings_list = []
     for row in reader:
         ratings_list.append(row)
+ 
