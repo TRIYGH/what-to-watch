@@ -47,21 +47,25 @@ u1_dict = make_udict(u1lorm)
 x = 943
 eucl_scores_list = []
 eucl_scores_dict = {}
+extra_copy_eucl_scores_dict = {}
 
 for i in range(x):
     if (i+1) != int(u1):
         u2lorm = get_all_users_ratings_and_movies(str(i+1))
         u2_dict = make_udict(u2lorm)
         eucl_score = match_users_by_movies_rated(u1_dict, u2_dict)
-        print("completed",i+1,eucl_score)
         eucl_scores_dict[(i+1)] = eucl_score
-        # eucl_scores_list.append(str(i+1))
-        # eucl_scores_list.append(eucl_score)
-    else: print("#####SKIPPED######")
-# u2_dict = make_udict(u2lorm)
-#
-# edlist = match_users_by_movies_rated(u1_dict, u2_dict)
-print(eucl_scores_dict)
+
+print(eucl_scores_dict,"^^^^^^^^^^^^^^^^^")
+
+#============ DEEP SHALLOW COPY PROBLEM ===============
+for i in range(x):
+    if (i+1) != int(u1):
+        u2lorm = get_all_users_ratings_and_movies(str(i+1))
+        u2_dict = make_udict(u2lorm)
+        eucl_score = match_users_by_movies_rated(u1_dict, u2_dict)
+        extra_copy_eucl_scores_dict[(i+1)] = eucl_score
+
 # for each in eucl_scores_list:
 
 best_fit = get_max_euclidean_scores(eucl_scores_dict)
@@ -76,4 +80,53 @@ best_fit = get_max_euclidean_scores(eucl_scores_dict)
 #     del eucl_scores_dict[key]
 #     i += 1
 #
-print(best_fit)
+print(best_fit,"\n")
+
+def loop_thru(uX, uU_list, uM_list, uR_list, each, umu1):
+    z = 0
+    for every in uX:
+        if every[0] not in umu1:
+            every.remove
+        else:
+            z += 1
+            if z > 10:
+                for i in range(10):
+                    uU_list.append(each) #,uX[i]  #list[640, [1,4]]
+                    uM_list.append(uX[i][0])
+                    uR_list.append(uX[i][1])
+                break
+    return uU_list, uM_list, uR_list
+
+
+umu1 = get_unrated_movies_for_user(u1) #[1][2][6][9]
+uX_list = []
+uU_list = []
+uM_list = []
+uR_list = []
+#get top ten movies each similar user rated top ten
+for each in best_fit:
+    uX = get_all_users_ratings_and_movies(each) #[1,4][122,5]
+    uX.sort(key=lambda x: x[1])
+    uX.reverse()
+    uU_list, uM_list, uR_list = (loop_thru(uX, uU_list, uM_list, uR_list, each, umu1))
+
+print(uU_list, uM_list, uR_list)
+input()
+
+print(uX_list)
+print(extra_copy_eucl_scores_dict)
+
+similar_list = []
+count = 1
+for each in best_fit:
+    similar_list.append(extra_copy_eucl_scores_dict[int(each)])
+print(similar_list)
+
+for i in range(10):
+    for j in range(10):
+        sim = similar_list[i] * int(uR_list[(i*10)+j])
+        print("movie: {}  with user: {} scores a: {}".format(uM_list[(i*10)+j],uU_list[(i*10)+j], sim))
+
+
+    #mts = movies_to_search_filter(9)
+    #top_ten_movies(10, mts)
